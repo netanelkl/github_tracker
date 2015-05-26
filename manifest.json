@@ -13,7 +13,7 @@
     {
       "matches": ["https://github.com/*/*/issues"],
       "js": ["parse-1.4.2.js", "jquery-2.1.4.min.js", "lodash.js", 
-             "credentials.js", "URI.js", "github_issues.js"]
+             "parse.js", "setup.js", "credentials.js", "github_issues.js"]
     }
   ],
   "permissions": [

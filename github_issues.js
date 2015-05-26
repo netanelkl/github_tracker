@@ -19,7 +19,9 @@ function setup() {
 }
 
 function add_issue() {
-	var Issue = Parse.Object.extend("Issue");
+	var Issue = Parse.Object.extend("Issue", {
+
+	});
 	var issueObject = new Issue();
 	issueObject
 	testObject.save({
