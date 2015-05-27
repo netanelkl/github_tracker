@@ -2,7 +2,7 @@ ParseManager = function ParseManager() {
 
 	var credentials = com.tracker.credentials;
 
-	var error_handler = function(error){
+	var error_handler = function(error) {
 		alert("Error: " + error.code + " " + error.message);
 	};
 	var parse_setup = function(onLoginDone) {
@@ -37,7 +37,7 @@ ParseManager = function ParseManager() {
 			error : error_handler
 		});
 	};
-	
+
 	var Project = Parse.Object.extend("Project", {}, {
 		create : function(name, owner) {
 			var project = new Project();
@@ -46,11 +46,20 @@ ParseManager = function ParseManager() {
 			return project;
 		}
 	});
-	var Issue = Parse.Object.extend("Issue", {}, {
+	var Issue = Parse.Object.extend("Issue", {
+		get_taken : function() {
+			return this.get("taken", 0);
+		},
+		get_estimated : function() {
+			return this.get("estimated", 0);
+		}
+	}, {
 		create : function(id, project) {
 			var issue = new Issue();
 			issue.set("project", project);
 			issue.set("id", id);
+			issue.set("taken", 0);
+			issue.set("estimated", 0);
 			return issue;
 		}
 	});
@@ -66,15 +75,31 @@ ParseManager = function ParseManager() {
 			error : error_handler
 		});
 	}
-	
+
 	var load_issue = function(project_name, owner_name, id, onDone) {
-		var query = new Parse.Query(Issue);
-		query.equalTo("project.name", project_name);
-		query.equalTo("project.owner", owner_name);
-		query.equalTo("id", id);
-		query.find({
-			success : function(issue) {
-				onDone(issue);
+		var query_project = new Parse.Query(Project);
+		query_project.equalTo("name", project_name);
+		query_project.equalTo("owner", owner_name);
+		query_project.find({
+			success : function(project) {
+				var on_project_loaded = function(project) {
+					var query = new Parse.Query(Issue);
+					query.equalTo("project", project);
+					query.equalTo("id", id);
+					query.find({
+						success : function(issue) {
+							onDone(issue);
+						},
+						error : error_handler
+					});
+				}
+				if (project.length == 0) {
+					project = Project.create(project_name, owner_name);
+					project.save().then(on_project_loaded);
+				} else {
+					on_project_loaded(project[0]);
+				}
+
 			},
 			error : error_handler
 		});

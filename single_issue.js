@@ -14,21 +14,29 @@ var tracker_ready = false;
 GitHubTracker.setup(function() {
 	ParseManager.load_issue(credentials.project, credentials.owner,
 			credentials.issue_id, function(issue) {
+				if (issue.length == 0) {
+					issue = ParseManager.Issue.create(credentials.project,
+							credentials.owner, credentials.issue_id);
+				} else {
+					issue = issue[0];
+				}
 				current_issue = issue;
 				tracker_ready = true;
 				check_all_ready();
 			});
 });
 
-var load_sidebar_app = function(){
+var load_sidebar_app = function() {
 	$.get(chrome.extension.getURL('/issue_template.html'), function(data) {
 		$(".discussion-sidebar").prepend(data);
-//	    alert(data);
+		$(".githubtracker-time-taken").text(current_issue.get_taken());
+		$(".githubtracker-time-estimated").text(current_issue.get_estimated());
+		// alert(data);
 	});
 }
 var dom_loaded = false;
-function check_all_ready(){
-	if(tracker_ready && dom_loaded){
+function check_all_ready() {
+	if (tracker_ready && dom_loaded) {
 		load_sidebar_app();
 	}
 }
