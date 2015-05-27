@@ -12,9 +12,33 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/*/*/issues"],
-      "js": ["parse-1.4.2.js", "jquery-2.1.4.min.js", "lodash.js", 
-             "parse.js", "setup.js", "credentials.js", "github_issues.js"]
+      "js": ["parse-1.4.2.js", 
+      		 "jquery-2.1.4.min.js",
+      		 "underscore-min.js",
+      		 "gh3.min.js", 
+      		 "lodash.js",
+             "credentials.js",
+             "parse.js", 
+             "github_tracker.js",
+             "issues.js"
+             ]
+    },
+       {
+      "matches": ["https://github.com/*/*/issues/*"],
+      "js": ["parse-1.4.2.js", 
+      		 "jquery-2.1.4.min.js",
+      		 "underscore-min.js",
+      		 "gh3.js", 
+      		 "lodash.js",
+             "credentials.js",
+             "parse.js", 
+             "github_tracker.js",
+             "single_issue.js"
+             ]
     }
+  ],
+  "web_accessible_resources": [
+    "issue_template.html"
   ],
   "permissions": [
     "tabs", "https://github.com/*"
